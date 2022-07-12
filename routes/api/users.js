@@ -6,11 +6,16 @@ const express = require("express");
 const router = express.Router();
 
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const passport = require("passport");
+
+const keys = require("../../config/key");
 
 const gravatar = require("gravatar");
 
 // 3. import user model
 const User = require("../../models/User");
+const { secretOrKey } = require("../../config/key");
 // $route GET api/users/test
 // @desc test api
 // @access public
@@ -45,6 +50,7 @@ router.post("/register", (req, res) => {
         email: req.body.email,
         avatar,
         password: req.body.password,
+        identity: req.body.identity,
       });
 
       //encrypted pwd
@@ -52,8 +58,6 @@ router.post("/register", (req, res) => {
         // hash函数直接callback了hash可以在括号里直接用，震惊
         bcrypt.hash(newUser.password, salt, (err, hash) => {
           // Store hash in your password DB.
-          if (err) throw err;
-
           // store the hash string instead of the real pwd
           newUser.password = hash;
 
@@ -79,15 +83,44 @@ router.post("/login", (req, res) => {
       return res.status(404).json({ email: "user not exist!" });
     }
 
-    bcrypt.compare(password, user.password).then(isMatch => {
-      if (isMatch){
-        res.json({msg: "success!"});
-      }else{
-        return res.status(400).json({password:"password incorrect!"});
+    bcrypt.compare(password, user.password).then((isMatch) => {
+      if (isMatch) {
+        const rule = {
+          id: user.id,
+          name: user.name,
+          avatar: user.avatar,
+          identity: user.identity,
+        };
+        jwt.sign(
+          rule,
+          keys.secretOrKey,
+          { expiresIn: 60 * 60 },
+          (err, token) => {
+            if (err) throw err;
+            res.json({
+              success: true,
+              token: "Bearer " + token,
+            });
+          }
+        );
+      } else {
+        return res.status(400).json({ password: "password incorrect!" });
       }
-    })
+    });
   });
 });
+
+// $route GET api/users/info
+// @desc verify token and returns current user info
+// @access private
+router.get(
+  "/info",
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    res.json(req.user);
+  }
+);
+
 //...
 module.exports = router;
 

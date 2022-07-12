@@ -4,6 +4,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const bodyParser = require('body-parser');
+
+const passport = require('passport');
+
 // instantiate express
 const app = express();
 // import user.JS
@@ -14,6 +17,9 @@ const db = require("./config/key").mongoURI;
 //url encoded - parameters wont show in the url
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+
+app.use(passport.initialize());
+require("./config/passport")(passport);
 // connect to the database
 mongoose.connect(db)
         .then(() => console.log("database connected."))

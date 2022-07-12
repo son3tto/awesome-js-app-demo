@@ -8,6 +8,7 @@ npm install mongoose -g
 npm install bcrypt
 npm install gravatar
 npm install jsonwebtoken
+npm install passport passport-jwt
 ```
 
 ## run the application
