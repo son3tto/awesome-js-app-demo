@@ -1,0 +1,29 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "description": "restful api",
+  "main": "server,js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "server": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/jz-jenny/awesome-js-app.git"
+  },
+  "author": "Jingwen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jz-jenny/awesome-js-app/issues"
+  },
+  "homepage": "https://github.com/jz-jenny/awesome-js-app#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
+    "express": "^4.18.1",
+    "gravatar": "^1.8.2",
+    "mongoose": "^6.4.0",
+    "nodemon": "^2.0.18"
+  }
+}
